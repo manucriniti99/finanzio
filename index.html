@@ -1351,11 +1351,41 @@ function rowsToResult(rows, dcol, acol, ecol, walletId, skipState){
 
 function parseIntesaRows(rows){
   if(!rows.length) return [];
-  const h=rows[0].map(x=>String(x||'').toLowerCase());
-  const dc=h.findIndex(x=>x.includes('data'));
-  const ac=h.findIndex(x=>x.includes('importo'));
-  const ec=h.findIndex(x=>x.includes('descriz')||x.includes('causale'));
-  return rowsToResult(rows,dc>=0?dc:0,ac>=0?ac:3,ec>=0?ec:2,'intesa',null);
+  // Trova la riga header cercando "Data" nella colonna A
+  let hi=rows.findIndex(r=>String(r[0]||'').trim().toLowerCase()==='data');
+  if(hi<0) hi=rows.findIndex(r=>String(r[0]||'').includes('Data'));
+  if(hi<0) hi=0;
+  const h=rows[hi].map(x=>String(x||'').toLowerCase().trim());
+  const dc=h.findIndex(x=>x==='data'); 
+  const ac=h.findIndex(x=>x==='importo');
+  const bc=h.findIndex(x=>x.includes('operaz')||x==='operazione');
+  const res=[];
+  for(let i=hi+1;i<rows.length;i++){
+    const c=rows[i];
+    // Salta righe senza data o importo
+    const rawD=c[dc>=0?dc:0];
+    const rawA=c[ac>=0?ac:7];
+    const rawB=String(c[bc>=0?bc:1]||'');
+    if(!rawD||rawA===''||rawA===undefined||rawA===null) continue;
+    // Parse data dd/mm/yyyy o Date object
+    let date='';
+    if(rawD instanceof Date){
+      date=`${rawD.getFullYear()}-${String(rawD.getMonth()+1).padStart(2,'0')}-${String(rawD.getDate()).padStart(2,'0')}`;
+    } else {
+      const s=String(rawD).trim();
+      if(/^\d{2}\/\d{2}\/\d{4}$/.test(s)){const[dd,mm,yy]=s.split('/');date=`${yy}-${mm}-${dd}`;}
+      else if(/^\d{4}-\d{2}-\d{2}$/.test(s)) date=s;
+      else continue;
+    }
+    // Parse importo — può essere numero o stringa "1.000,00" o "-500,00"
+    let amt=0;
+    if(typeof rawA==='number') amt=rawA;
+    else amt=parseFloat(String(rawA).replace(/\./g,'').replace(',','.').replace(/[^0-9.\-]/g,''))||0;
+    if(!amt) continue;
+    const desc=rawB||'Movimento';
+    res.push({id:Date.now()+Math.random(),date,description:desc,amount:amt,category:amt>0?'entrate':guessCategory(desc),wallet:'intesa',source:'Intesa Sanpaolo'});
+  }
+  return res;
 }
 
 function parseRevolutRows(rows){
