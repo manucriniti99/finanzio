@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html lang="it">
 <head>
 <meta charset="UTF-8"/>
@@ -7,6 +6,7 @@
 <title>Finanzio — Il tuo wallet personale</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800;900&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet"/>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
 :root{
@@ -27,18 +27,18 @@ input,select{font-family:'Nunito',sans-serif;outline:none;border:none}
 ::-webkit-scrollbar{width:5px}::-webkit-scrollbar-thumb{background:var(--bg4);border-radius:3px}
 
 /* ════════════════════════════════════════
-AUTH PAGES
+   AUTH PAGES
 ════════════════════════════════════════ */
 #auth-screen{
-min-height:100vh;display:flex;align-items:stretch;
-position:relative;
+  min-height:100vh;display:flex;align-items:stretch;
+  position:relative;
 }
 
 /* Left panel — decorative */
 .auth-left{
-flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;
-background:linear-gradient(145deg,#0b0e1a 0%,#111527 50%,#0e1420 100%);
-padding:60px 50px;position:relative;overflow:hidden;
+  flex:1;display:flex;flex-direction:column;justify-content:center;align-items:center;
+  background:linear-gradient(145deg,#0b0e1a 0%,#111527 50%,#0e1420 100%);
+  padding:60px 50px;position:relative;overflow:hidden;
 }
 .auth-left-bg{position:absolute;inset:0;pointer-events:none}
 .orb{position:absolute;border-radius:50%;filter:blur(80px);opacity:0.35}
@@ -49,293 +49,293 @@ padding:60px 50px;position:relative;overflow:hidden;
 .auth-left-content{position:relative;z-index:1;text-align:center;max-width:420px}
 .auth-brand{display:flex;align-items:center;justify-content:center;gap:14px;margin-bottom:48px}
 .auth-brand-icon{
-width:54px;height:54px;border-radius:16px;
-background:linear-gradient(135deg,var(–teal),var(–purple));
-display:flex;align-items:center;justify-content:center;font-size:26px;
-box-shadow:0 8px 32px rgba(0,212,170,0.4);
+  width:54px;height:54px;border-radius:16px;
+  background:linear-gradient(135deg,var(--teal),var(--purple));
+  display:flex;align-items:center;justify-content:center;font-size:26px;
+  box-shadow:0 8px 32px rgba(0,212,170,0.4);
 }
-.auth-brand-name{font-family:‘Plus Jakarta Sans’,sans-serif;font-size:32px;font-weight:800;color:var(–text);letter-spacing:-1px}
-.auth-brand-name span{color:var(–teal)}
+.auth-brand-name{font-family:'Plus Jakarta Sans',sans-serif;font-size:32px;font-weight:800;color:var(--text);letter-spacing:-1px}
+.auth-brand-name span{color:var(--teal)}
 
-.auth-tagline{font-size:28px;font-weight:800;color:var(–text);line-height:1.3;margin-bottom:16px;font-family:‘Plus Jakarta Sans’,sans-serif}
-.auth-tagline em{color:var(–teal);font-style:normal}
-.auth-desc{font-size:15px;color:var(–text2);line-height:1.7;margin-bottom:44px}
+.auth-tagline{font-size:28px;font-weight:800;color:var(--text);line-height:1.3;margin-bottom:16px;font-family:'Plus Jakarta Sans',sans-serif}
+.auth-tagline em{color:var(--teal);font-style:normal}
+.auth-desc{font-size:15px;color:var(--text2);line-height:1.7;margin-bottom:44px}
 
 .auth-features{display:flex;flex-direction:column;gap:16px;text-align:left}
-.auth-feat{display:flex;align-items:center;gap:14px;padding:14px 16px;background:rgba(255,255,255,0.04);border:1px solid var(–border);border-radius:14px;backdrop-filter:blur(10px)}
+.auth-feat{display:flex;align-items:center;gap:14px;padding:14px 16px;background:rgba(255,255,255,0.04);border:1px solid var(--border);border-radius:14px;backdrop-filter:blur(10px)}
 .auth-feat-icon{font-size:22px;flex-shrink:0}
-.auth-feat-text{font-size:13px;font-weight:600;color:var(–text2)}
-.auth-feat-text strong{display:block;color:var(–text);font-weight:700;margin-bottom:2px}
+.auth-feat-text{font-size:13px;font-weight:600;color:var(--text2)}
+.auth-feat-text strong{display:block;color:var(--text);font-weight:700;margin-bottom:2px}
 
 /* Right panel — form */
 .auth-right{
-width:480px;min-width:480px;background:var(–bg2);
-display:flex;flex-direction:column;justify-content:center;
-padding:60px 48px;border-left:1px solid var(–border);
-position:relative;
+  width:480px;min-width:480px;background:var(--bg2);
+  display:flex;flex-direction:column;justify-content:center;
+  padding:60px 48px;border-left:1px solid var(--border);
+  position:relative;
 }
 .auth-right::before{
-content:’’;position:absolute;top:0;left:0;right:0;height:3px;
-background:linear-gradient(90deg,var(–teal),var(–purple),var(–blue));
+  content:'';position:absolute;top:0;left:0;right:0;height:3px;
+  background:linear-gradient(90deg,var(--teal),var(--purple),var(--blue));
 }
 
-.auth-form-title{font-family:‘Plus Jakarta Sans’,sans-serif;font-size:26px;font-weight:800;color:var(–text);margin-bottom:6px}
-.auth-form-sub{font-size:14px;color:var(–text2);margin-bottom:32px;font-weight:500}
+.auth-form-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:26px;font-weight:800;color:var(--text);margin-bottom:6px}
+.auth-form-sub{font-size:14px;color:var(--text2);margin-bottom:32px;font-weight:500}
 
-.auth-tabs{display:flex;background:var(–bg3);border-radius:12px;padding:4px;margin-bottom:28px;gap:4px}
-.auth-tab{flex:1;padding:10px;border-radius:9px;font-size:14px;font-weight:700;background:none;color:var(–text2);transition:all 0.2s;cursor:pointer}
-.auth-tab.active{background:var(–bg4);color:var(–text);box-shadow:0 2px 12px rgba(0,0,0,0.3)}
+.auth-tabs{display:flex;background:var(--bg3);border-radius:12px;padding:4px;margin-bottom:28px;gap:4px}
+.auth-tab{flex:1;padding:10px;border-radius:9px;font-size:14px;font-weight:700;background:none;color:var(--text2);transition:all 0.2s;cursor:pointer}
+.auth-tab.active{background:var(--bg4);color:var(--text);box-shadow:0 2px 12px rgba(0,0,0,0.3)}
 
 .form-group{margin-bottom:18px}
-.form-label{display:block;font-size:12px;font-weight:700;color:var(–text3);letter-spacing:0.8px;text-transform:uppercase;margin-bottom:7px}
+.form-label{display:block;font-size:12px;font-weight:700;color:var(--text3);letter-spacing:0.8px;text-transform:uppercase;margin-bottom:7px}
 .form-input-wrap{position:relative}
 .form-input-icon{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:16px;pointer-events:none}
 .form-input{
-width:100%;background:var(–bg3);border:1.5px solid var(–border2);
-border-radius:12px;padding:13px 14px 13px 44px;color:var(–text);
-font-size:14px;font-weight:600;transition:all 0.2s;
+  width:100%;background:var(--bg3);border:1.5px solid var(--border2);
+  border-radius:12px;padding:13px 14px 13px 44px;color:var(--text);
+  font-size:14px;font-weight:600;transition:all 0.2s;
 }
-.form-input:focus{border-color:var(–teal);background:rgba(0,212,170,0.04);box-shadow:0 0 0 3px rgba(0,212,170,0.1)}
-.form-input::placeholder{color:var(–text3)}
+.form-input:focus{border-color:var(--teal);background:rgba(0,212,170,0.04);box-shadow:0 0 0 3px rgba(0,212,170,0.1)}
+.form-input::placeholder{color:var(--text3)}
 .form-input.no-icon{padding-left:14px}
 
 .form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
 
 .auth-btn{
-width:100%;padding:15px;border-radius:14px;
-background:linear-gradient(135deg,var(–teal),#00a88d);
-color:#062015;font-size:15px;font-weight:800;
-margin-top:8px;transition:all 0.25s;
-box-shadow:0 6px 24px rgba(0,212,170,0.35);
-position:relative;overflow:hidden;
+  width:100%;padding:15px;border-radius:14px;
+  background:linear-gradient(135deg,var(--teal),#00a88d);
+  color:#062015;font-size:15px;font-weight:800;
+  margin-top:8px;transition:all 0.25s;
+  box-shadow:0 6px 24px rgba(0,212,170,0.35);
+  position:relative;overflow:hidden;
 }
-.auth-btn::after{content:’’;position:absolute;inset:0;background:rgba(255,255,255,0.1);opacity:0;transition:opacity 0.2s}
+.auth-btn::after{content:'';position:absolute;inset:0;background:rgba(255,255,255,0.1);opacity:0;transition:opacity 0.2s}
 .auth-btn:hover::after{opacity:1}
 .auth-btn:hover{transform:translateY(-1px);box-shadow:0 10px 32px rgba(0,212,170,0.45)}
 .auth-btn:active{transform:translateY(0)}
 
 .auth-divider{display:flex;align-items:center;gap:12px;margin:20px 0}
-.auth-divider::before,.auth-divider::after{content:’’;flex:1;height:1px;background:var(–border)}
-.auth-divider span{font-size:12px;font-weight:700;color:var(–text3)}
+.auth-divider::before,.auth-divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.auth-divider span{font-size:12px;font-weight:700;color:var(--text3)}
 
 .social-btn{
-width:100%;padding:12px;border-radius:12px;background:var(–bg3);
-border:1.5px solid var(–border2);color:var(–text2);font-size:14px;font-weight:700;
-display:flex;align-items:center;justify-content:center;gap:10px;
-transition:all 0.2s;margin-bottom:10px;
+  width:100%;padding:12px;border-radius:12px;background:var(--bg3);
+  border:1.5px solid var(--border2);color:var(--text2);font-size:14px;font-weight:700;
+  display:flex;align-items:center;justify-content:center;gap:10px;
+  transition:all 0.2s;margin-bottom:10px;
 }
-.social-btn:hover{background:var(–bg4);color:var(–text);border-color:var(–border2)}
+.social-btn:hover{background:var(--bg4);color:var(--text);border-color:var(--border2)}
 
-.auth-switch{text-align:center;font-size:13px;color:var(–text2);margin-top:20px;font-weight:600}
-.auth-switch a{color:var(–teal);font-weight:700;cursor:pointer;text-decoration:none}
+.auth-switch{text-align:center;font-size:13px;color:var(--text2);margin-top:20px;font-weight:600}
+.auth-switch a{color:var(--teal);font-weight:700;cursor:pointer;text-decoration:none}
 .auth-switch a:hover{text-decoration:underline}
 
-.form-error{font-size:12px;color:var(–red);font-weight:700;margin-top:6px;display:none}
+.form-error{font-size:12px;color:var(--red);font-weight:700;margin-top:6px;display:none}
 .form-error.show{display:block}
-.form-success{background:rgba(0,214,143,0.12);border:1px solid rgba(0,214,143,0.25);border-radius:10px;padding:12px 14px;font-size:13px;font-weight:700;color:var(–green);margin-bottom:16px;display:none}
+.form-success{background:rgba(0,214,143,0.12);border:1px solid rgba(0,214,143,0.25);border-radius:10px;padding:12px 14px;font-size:13px;font-weight:700;color:var(--green);margin-bottom:16px;display:none}
 .form-success.show{display:block}
 
-.password-toggle{position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;color:var(–text3);font-size:16px;background:none;border:none;padding:0}
-.strength-bar{height:4px;background:var(–bg4);border-radius:2px;margin-top:6px;overflow:hidden}
+.password-toggle{position:absolute;right:14px;top:50%;transform:translateY(-50%);cursor:pointer;color:var(--text3);font-size:16px;background:none;border:none;padding:0}
+.strength-bar{height:4px;background:var(--bg4);border-radius:2px;margin-top:6px;overflow:hidden}
 .strength-fill{height:100%;border-radius:2px;transition:all 0.3s}
 .strength-label{font-size:11px;font-weight:700;margin-top:4px}
 
 .checkbox-wrap{display:flex;align-items:flex-start;gap:10px;cursor:pointer}
-.checkbox-wrap input[type=checkbox]{width:18px;height:18px;accent-color:var(–teal);cursor:pointer;flex-shrink:0;margin-top:1px}
-.checkbox-label{font-size:13px;color:var(–text2);font-weight:600;line-height:1.5}
-.checkbox-label a{color:var(–teal)}
+.checkbox-wrap input[type=checkbox]{width:18px;height:18px;accent-color:var(--teal);cursor:pointer;flex-shrink:0;margin-top:1px}
+.checkbox-label{font-size:13px;color:var(--text2);font-weight:600;line-height:1.5}
+.checkbox-label a{color:var(--teal)}
 
 @media(max-width:900px){.auth-left{display:none}.auth-right{width:100%;min-width:unset;padding:40px 24px}}
 
 /* ════════════════════════════════════════
-APP SCREEN
+   APP SCREEN
 ════════════════════════════════════════ */
 #app-screen{display:none;height:100vh;flex-direction:row;overflow:hidden}
 
 /* SIDEBAR */
 #sidebar{
-width:248px;min-width:248px;background:var(–bg2);
-display:flex;flex-direction:column;
-border-right:1px solid var(–border);
-height:100vh;overflow-y:auto;
+  width:248px;min-width:248px;background:var(--bg2);
+  display:flex;flex-direction:column;
+  border-right:1px solid var(--border);
+  height:100vh;overflow-y:auto;
 }
 .sidebar-logo{padding:26px 22px 18px;display:flex;align-items:center;gap:10px}
-.logo-icon{width:38px;height:38px;background:linear-gradient(135deg,var(–teal),var(–purple));border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 4px 16px rgba(0,212,170,0.3)}
-.logo-text{font-family:‘Plus Jakarta Sans’,sans-serif;font-size:21px;font-weight:800;color:var(–text);letter-spacing:-0.5px}
-.logo-text span{color:var(–teal)}
+.logo-icon{width:38px;height:38px;background:linear-gradient(135deg,var(--teal),var(--purple));border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px;box-shadow:0 4px 16px rgba(0,212,170,0.3)}
+.logo-text{font-family:'Plus Jakarta Sans',sans-serif;font-size:21px;font-weight:800;color:var(--text);letter-spacing:-0.5px}
+.logo-text span{color:var(--teal)}
 
-.sidebar-user{margin:0 14px 12px;padding:12px 14px;background:var(–bg3);border-radius:14px;border:1px solid var(–border);display:flex;align-items:center;gap:10px}
-.user-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(–teal),var(–purple));display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:#062015;flex-shrink:0}
-.user-name{font-size:13px;font-weight:700;color:var(–text)}
-.user-email{font-size:11px;color:var(–text3);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:130px}
-.user-logout{margin-left:auto;background:none;border:none;color:var(–text3);font-size:16px;cursor:pointer;transition:color 0.2s;padding:4px}
-.user-logout:hover{color:var(–red)}
+.sidebar-user{margin:0 14px 12px;padding:12px 14px;background:var(--bg3);border-radius:14px;border:1px solid var(--border);display:flex;align-items:center;gap:10px}
+.user-avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--teal),var(--purple));display:flex;align-items:center;justify-content:center;font-size:15px;font-weight:800;color:#062015;flex-shrink:0}
+.user-name{font-size:13px;font-weight:700;color:var(--text)}
+.user-email{font-size:11px;color:var(--text3);font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:130px}
+.user-logout{margin-left:auto;background:none;border:none;color:var(--text3);font-size:16px;cursor:pointer;transition:color 0.2s;padding:4px}
+.user-logout:hover{color:var(--red)}
 
-.nav-section{padding:6px 18px 4px;font-size:10px;font-weight:700;color:var(–text3);letter-spacing:1.5px;text-transform:uppercase;margin-top:6px}
-.nav-item{display:flex;align-items:center;gap:11px;padding:10px 18px;margin:2px 8px;border-radius:12px;cursor:pointer;transition:all 0.18s;color:var(–text2);font-size:14px;font-weight:600;position:relative}
-.nav-item:hover{background:var(–bg3);color:var(–text)}
-.nav-item.active{background:rgba(0,212,170,0.12);color:var(–teal)}
-.nav-item.active::before{content:’’;position:absolute;left:-8px;top:50%;transform:translateY(-50%);width:3px;height:18px;background:var(–teal);border-radius:2px}
+.nav-section{padding:6px 18px 4px;font-size:10px;font-weight:700;color:var(--text3);letter-spacing:1.5px;text-transform:uppercase;margin-top:6px}
+.nav-item{display:flex;align-items:center;gap:11px;padding:10px 18px;margin:2px 8px;border-radius:12px;cursor:pointer;transition:all 0.18s;color:var(--text2);font-size:14px;font-weight:600;position:relative}
+.nav-item:hover{background:var(--bg3);color:var(--text)}
+.nav-item.active{background:rgba(0,212,170,0.12);color:var(--teal)}
+.nav-item.active::before{content:'';position:absolute;left:-8px;top:50%;transform:translateY(-50%);width:3px;height:18px;background:var(--teal);border-radius:2px}
 .nav-icon{font-size:18px;width:22px;text-align:center;flex-shrink:0}
 
 .sidebar-wallets{padding:8px 16px 0}
 .sw-item{display:flex;align-items:center;gap:9px;padding:8px 8px;border-radius:10px;cursor:pointer;transition:background 0.15s;margin-bottom:2px}
-.sw-item:hover{background:var(–bg3)}
+.sw-item:hover{background:var(--bg3)}
 .sw-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
-.sw-name{font-size:13px;font-weight:600;color:var(–text2);flex:1}
-.sw-bal{font-size:12px;font-weight:800;color:var(–text)}
+.sw-name{font-size:13px;font-weight:600;color:var(--text2);flex:1}
+.sw-bal{font-size:12px;font-weight:800;color:var(--text)}
 
-.sidebar-bottom{margin-top:auto;padding:14px 14px 18px;border-top:1px solid var(–border)}
-.import-sidebar-btn{width:100%;padding:10px;border-radius:12px;background:rgba(0,212,170,0.08);border:1.5px dashed rgba(0,212,170,0.28);color:var(–teal);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.2s}
-.import-sidebar-btn:hover{background:rgba(0,212,170,0.15);border-color:var(–teal)}
+.sidebar-bottom{margin-top:auto;padding:14px 14px 18px;border-top:1px solid var(--border)}
+.import-sidebar-btn{width:100%;padding:10px;border-radius:12px;background:rgba(0,212,170,0.08);border:1.5px dashed rgba(0,212,170,0.28);color:var(--teal);font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;gap:8px;transition:all 0.2s}
+.import-sidebar-btn:hover{background:rgba(0,212,170,0.15);border-color:var(--teal)}
 
 /* MAIN */
 #main{flex:1;display:flex;flex-direction:column;height:100vh;overflow:hidden}
-#topbar{background:var(–bg2);border-bottom:1px solid var(–border);padding:0 28px;height:62px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
-.topbar-title{font-family:‘Plus Jakarta Sans’,sans-serif;font-size:18px;font-weight:800;color:var(–text)}
+#topbar{background:var(--bg2);border-bottom:1px solid var(--border);padding:0 28px;height:62px;display:flex;align-items:center;justify-content:space-between;flex-shrink:0}
+.topbar-title{font-family:'Plus Jakarta Sans',sans-serif;font-size:18px;font-weight:800;color:var(--text)}
 .topbar-right{display:flex;align-items:center;gap:10px}
-.period-tabs{display:flex;background:var(–bg3);border-radius:10px;padding:3px;gap:2px}
-.period-tab{padding:5px 14px;border-radius:8px;font-size:12px;font-weight:700;color:var(–text2);cursor:pointer;background:none;border:none;transition:all 0.2s}
-.period-tab.active{background:var(–bg4);color:var(–text)}
-.icon-btn{width:36px;height:36px;border-radius:10px;background:var(–bg3);display:flex;align-items:center;justify-content:center;font-size:16px;transition:background 0.2s;cursor:pointer;border:none;color:var(–text2)}
-.icon-btn:hover{background:var(–bg4);color:var(–text)}
+.period-tabs{display:flex;background:var(--bg3);border-radius:10px;padding:3px;gap:2px}
+.period-tab{padding:5px 14px;border-radius:8px;font-size:12px;font-weight:700;color:var(--text2);cursor:pointer;background:none;border:none;transition:all 0.2s}
+.period-tab.active{background:var(--bg4);color:var(--text)}
+.icon-btn{width:36px;height:36px;border-radius:10px;background:var(--bg3);display:flex;align-items:center;justify-content:center;font-size:16px;transition:background 0.2s;cursor:pointer;border:none;color:var(--text2)}
+.icon-btn:hover{background:var(--bg4);color:var(--text)}
 #content{flex:1;overflow-y:auto;padding:24px 28px}
 #content::-webkit-scrollbar{width:5px}
 
 /* CARDS */
 .overview-row{display:grid;grid-template-columns:1.7fr 1fr 1fr;gap:16px;margin-bottom:20px}
-.balance-card{background:linear-gradient(135deg,#162038 0%,#1a2848 100%);border:1px solid rgba(77,168,255,0.2);border-radius:var(–r);padding:24px;position:relative;overflow:hidden}
-.balance-card::after{content:’’;position:absolute;top:-50px;right:-50px;width:200px;height:200px;background:radial-gradient(circle,rgba(0,212,170,0.12),transparent 70%);border-radius:50%;pointer-events:none}
+.balance-card{background:linear-gradient(135deg,#162038 0%,#1a2848 100%);border:1px solid rgba(77,168,255,0.2);border-radius:var(--r);padding:24px;position:relative;overflow:hidden}
+.balance-card::after{content:'';position:absolute;top:-50px;right:-50px;width:200px;height:200px;background:radial-gradient(circle,rgba(0,212,170,0.12),transparent 70%);border-radius:50%;pointer-events:none}
 .balance-label{font-size:11px;font-weight:700;color:rgba(255,255,255,0.4);letter-spacing:0.8px;text-transform:uppercase;margin-bottom:8px}
-.balance-amount{font-size:36px;font-weight:900;color:#fff;letter-spacing:-1.5px;margin-bottom:18px;font-family:‘Plus Jakarta Sans’,sans-serif}
+.balance-amount{font-size:36px;font-weight:900;color:#fff;letter-spacing:-1.5px;margin-bottom:18px;font-family:'Plus Jakarta Sans',sans-serif}
 .balance-amount span{font-size:20px;opacity:0.6;font-weight:700;margin-right:3px}
 .balance-sub{display:flex;gap:18px}
 .bal-sub{display:flex;align-items:center;gap:6px;font-size:12px;font-weight:700}
 
-.stat-card{background:var(–bg2);border:1px solid var(–border);border-radius:var(–r);padding:20px;display:flex;flex-direction:column;gap:6px}
+.stat-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:20px;display:flex;flex-direction:column;gap:6px}
 .stat-icon{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:20px;margin-bottom:2px}
-.stat-label{font-size:12px;font-weight:700;color:var(–text2)}
-.stat-value{font-size:26px;font-weight:900;letter-spacing:-0.5px;font-family:‘Plus Jakarta Sans’,sans-serif}
-.stat-sub{font-size:11px;color:var(–text3);font-weight:600}
+.stat-label{font-size:12px;font-weight:700;color:var(--text2)}
+.stat-value{font-size:26px;font-weight:900;letter-spacing:-0.5px;font-family:'Plus Jakarta Sans',sans-serif}
+.stat-sub{font-size:11px;color:var(--text3);font-weight:600}
 
 /* CHARTS */
 .charts-row{display:grid;grid-template-columns:2fr 1fr;gap:16px;margin-bottom:20px}
-.chart-card{background:var(–bg2);border:1px solid var(–border);border-radius:var(–r);padding:22px}
+.chart-card{background:var(--bg2);border:1px solid var(--border);border-radius:var(--r);padding:22px}
 .chart-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
-.chart-title{font-size:15px;font-weight:800;color:var(–text);font-family:‘Plus Jakarta Sans’,sans-serif}
-.chart-sub{font-size:11px;color:var(–text3);font-weight:600;margin-top:2px}
+.chart-title{font-size:15px;font-weight:800;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif}
+.chart-sub{font-size:11px;color:var(--text3);font-weight:600;margin-top:2px}
 .chart-tabs{display:flex;gap:6px}
-.chart-tab{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;border:1.5px solid var(–border2);color:var(–text2);background:none;transition:all 0.2s;cursor:pointer}
-.chart-tab.active{background:var(–teal);border-color:var(–teal);color:#062015}
+.chart-tab{padding:4px 12px;border-radius:20px;font-size:11px;font-weight:700;border:1.5px solid var(--border2);color:var(--text2);background:none;transition:all 0.2s;cursor:pointer}
+.chart-tab.active{background:var(--teal);border-color:var(--teal);color:#062015}
 
 /* BUDGET BARS */
 .budget-item{margin-bottom:16px}
 .budget-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:7px}
 .budget-cat{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:700}
 .bcat-icon{width:30px;height:30px;border-radius:9px;display:flex;align-items:center;justify-content:center;font-size:15px;flex-shrink:0}
-.budget-amounts{font-size:12px;font-weight:700;color:var(–text2)}
-.budget-track{height:7px;background:var(–bg4);border-radius:4px;overflow:hidden}
+.budget-amounts{font-size:12px;font-weight:700;color:var(--text2)}
+.budget-track{height:7px;background:var(--bg4);border-radius:4px;overflow:hidden}
 .budget-fill{height:100%;border-radius:4px;transition:width 0.6s cubic-bezier(.4,0,.2,1)}
-.budget-remain{font-size:10px;font-weight:700;color:var(–text3);margin-top:3px;text-align:right}
+.budget-remain{font-size:10px;font-weight:700;color:var(--text3);margin-top:3px;text-align:right}
 
 /* TRANSACTIONS */
 .section-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-.section-title{font-size:15px;font-weight:800;color:var(–text);font-family:‘Plus Jakarta Sans’,sans-serif}
-.see-all{font-size:12px;font-weight:700;color:var(–teal);background:none;border:none;cursor:pointer;padding:4px 10px;border-radius:8px}
+.section-title{font-size:15px;font-weight:800;color:var(--text);font-family:'Plus Jakarta Sans',sans-serif}
+.see-all{font-size:12px;font-weight:700;color:var(--teal);background:none;border:none;cursor:pointer;padding:4px 10px;border-radius:8px}
 .see-all:hover{background:rgba(0,212,170,0.1)}
 
-.tx-group-label{font-size:10px;font-weight:700;color:var(–text3);letter-spacing:1px;text-transform:uppercase;padding:8px 0 5px}
+.tx-group-label{font-size:10px;font-weight:700;color:var(--text3);letter-spacing:1px;text-transform:uppercase;padding:8px 0 5px}
 .tx-row{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px;cursor:pointer;transition:background 0.15s}
-.tx-row:hover{background:var(–bg3)}
+.tx-row:hover{background:var(--bg3)}
 .tx-cat-icon{width:42px;height:42px;border-radius:13px;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
 .tx-info{flex:1;min-width:0}
-.tx-name{font-size:14px;font-weight:700;color:var(–text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.tx-meta{font-size:11px;color:var(–text3);font-weight:600;display:flex;align-items:center;gap:6px;margin-top:1px}
+.tx-name{font-size:14px;font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tx-meta{font-size:11px;color:var(--text3);font-weight:600;display:flex;align-items:center;gap:6px;margin-top:1px}
 .tx-wallet-tag{font-size:10px;font-weight:700;padding:1px 6px;border-radius:20px}
 .tx-right{text-align:right;flex-shrink:0}
 .tx-amount{font-size:15px;font-weight:800}
-.tx-date{font-size:10px;color:var(–text3);font-weight:600;margin-top:1px}
+.tx-date{font-size:10px;color:var(--text3);font-weight:600;margin-top:1px}
 
 /* WALLETS PAGE */
 .wallets-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
-.wallet-card{border-radius:var(–r);padding:24px;position:relative;overflow:hidden;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s}
+.wallet-card{border-radius:var(--r);padding:24px;position:relative;overflow:hidden;cursor:pointer;transition:transform 0.2s,box-shadow 0.2s}
 .wallet-card:hover{transform:translateY(-2px);box-shadow:0 16px 48px rgba(0,0,0,0.5)}
 .wcard-shine{position:absolute;top:-40px;right:-40px;width:140px;height:140px;border-radius:50%;background:rgba(255,255,255,0.07);pointer-events:none}
 .wcard-shine2{position:absolute;bottom:-20px;left:-20px;width:80px;height:80px;border-radius:50%;background:rgba(255,255,255,0.04);pointer-events:none}
 .wcard-icon{font-size:28px;margin-bottom:14px}
 .wcard-name{font-size:13px;font-weight:700;opacity:0.8;margin-bottom:6px}
-.wcard-balance{font-size:30px;font-weight:900;letter-spacing:-1px;font-family:‘Plus Jakarta Sans’,sans-serif}
+.wcard-balance{font-size:30px;font-weight:900;letter-spacing:-1px;font-family:'Plus Jakarta Sans',sans-serif}
 .wcard-sub{font-size:11px;opacity:0.6;margin-top:6px;font-weight:600}
 
 /* ANALYTICS */
 .analytics-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:20px}
 .legend-item{display:flex;align-items:center;gap:8px;padding:5px 0;font-size:13px;font-weight:700}
 .legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
-.legend-pct{margin-left:auto;font-size:12px;color:var(–text2)}
+.legend-pct{margin-left:auto;font-size:12px;color:var(--text2)}
 
 /* MODAL */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.75);backdrop-filter:blur(8px);z-index:1000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity 0.25s}
 .modal-overlay.show{opacity:1;pointer-events:all}
-.modal{background:var(–bg2);border:1px solid var(–border2);border-radius:24px;width:470px;max-width:calc(100vw - 32px);max-height:92vh;overflow-y:auto;transform:translateY(16px) scale(0.97);transition:transform 0.25s;box-shadow:0 32px 80px rgba(0,0,0,0.7)}
+.modal{background:var(--bg2);border:1px solid var(--border2);border-radius:24px;width:470px;max-width:calc(100vw - 32px);max-height:92vh;overflow-y:auto;transform:translateY(16px) scale(0.97);transition:transform 0.25s;box-shadow:0 32px 80px rgba(0,0,0,0.7)}
 .modal-overlay.show .modal{transform:none}
 .modal-header{padding:24px 24px 0;display:flex;align-items:center;justify-content:space-between}
-.modal-title{font-size:19px;font-weight:800;font-family:‘Plus Jakarta Sans’,sans-serif}
-.modal-close{width:32px;height:32px;background:var(–bg3);border-radius:10px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(–text2);border:none;transition:all 0.2s}
-.modal-close:hover{background:var(–bg4);color:var(–text)}
+.modal-title{font-size:19px;font-weight:800;font-family:'Plus Jakarta Sans',sans-serif}
+.modal-close{width:32px;height:32px;background:var(--bg3);border-radius:10px;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;color:var(--text2);border:none;transition:all 0.2s}
+.modal-close:hover{background:var(--bg4);color:var(--text)}
 .modal-body{padding:20px 24px 26px}
 
-.type-tabs{display:flex;background:var(–bg3);border-radius:12px;padding:4px;gap:4px;margin-bottom:20px}
-.type-tab{flex:1;padding:10px;border-radius:9px;font-size:13px;font-weight:800;background:none;color:var(–text2);cursor:pointer;transition:all 0.2s;border:none}
-.type-tab.active.expense{background:#2a1522;color:var(–red)}
-.type-tab.active.income{background:#122a1e;color:var(–green)}
+.type-tabs{display:flex;background:var(--bg3);border-radius:12px;padding:4px;gap:4px;margin-bottom:20px}
+.type-tab{flex:1;padding:10px;border-radius:9px;font-size:13px;font-weight:800;background:none;color:var(--text2);cursor:pointer;transition:all 0.2s;border:none}
+.type-tab.active.expense{background:#2a1522;color:var(--red)}
+.type-tab.active.income{background:#122a1e;color:var(--green)}
 
 .form-g{margin-bottom:15px}
-.form-lbl{display:block;font-size:11px;font-weight:700;color:var(–text3);letter-spacing:0.8px;text-transform:uppercase;margin-bottom:6px}
-.form-inp{width:100%;background:var(–bg3);border:1.5px solid var(–border2);border-radius:11px;padding:12px 14px;color:var(–text);font-size:14px;font-weight:600;transition:border-color 0.2s}
-.form-inp:focus{border-color:var(–teal)}
-.form-inp::placeholder{color:var(–text3)}
+.form-lbl{display:block;font-size:11px;font-weight:700;color:var(--text3);letter-spacing:0.8px;text-transform:uppercase;margin-bottom:6px}
+.form-inp{width:100%;background:var(--bg3);border:1.5px solid var(--border2);border-radius:11px;padding:12px 14px;color:var(--text);font-size:14px;font-weight:600;transition:border-color 0.2s}
+.form-inp:focus{border-color:var(--teal)}
+.form-inp::placeholder{color:var(--text3)}
 .amount-wrap{position:relative}
-.amount-sym{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:20px;font-weight:800;color:var(–text3)}
+.amount-sym{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-size:20px;font-weight:800;color:var(--text3)}
 .amount-inp{padding-left:34px!important;font-size:24px!important;font-weight:900!important;letter-spacing:-0.5px}
 
 .cat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-.cat-btn{aspect-ratio:1;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:var(–bg3);border:2px solid transparent;cursor:pointer;font-size:20px;transition:all 0.18s}
-.cat-btn span{font-size:9px;font-weight:700;color:var(–text2)}
-.cat-btn.selected{border-color:var(–teal);background:rgba(0,212,170,0.1)}
+.cat-btn{aspect-ratio:1;border-radius:12px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;background:var(--bg3);border:2px solid transparent;cursor:pointer;font-size:20px;transition:all 0.18s}
+.cat-btn span{font-size:9px;font-weight:700;color:var(--text2)}
+.cat-btn.selected{border-color:var(--teal);background:rgba(0,212,170,0.1)}
 
 .w-select-row{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
-.w-select-btn{padding:9px 6px;border-radius:10px;background:var(–bg3);border:2px solid transparent;display:flex;align-items:center;gap:7px;font-size:12px;font-weight:700;color:var(–text2);cursor:pointer;transition:all 0.18s;white-space:nowrap}
-.w-select-btn.selected{border-color:var(–teal);color:var(–text)}
+.w-select-btn{padding:9px 6px;border-radius:10px;background:var(--bg3);border:2px solid transparent;display:flex;align-items:center;gap:7px;font-size:12px;font-weight:700;color:var(--text2);cursor:pointer;transition:all 0.18s;white-space:nowrap}
+.w-select-btn.selected{border-color:var(--teal);color:var(--text)}
 .ws-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
 
-.submit-btn{width:100%;padding:14px;border-radius:14px;font-size:15px;font-weight:800;background:linear-gradient(135deg,var(–teal),#009e84);color:#062015;border:none;cursor:pointer;margin-top:8px;box-shadow:0 6px 24px rgba(0,212,170,0.3);transition:all 0.2s}
+.submit-btn{width:100%;padding:14px;border-radius:14px;font-size:15px;font-weight:800;background:linear-gradient(135deg,var(--teal),#009e84);color:#062015;border:none;cursor:pointer;margin-top:8px;box-shadow:0 6px 24px rgba(0,212,170,0.3);transition:all 0.2s}
 .submit-btn:hover{opacity:0.9;transform:translateY(-1px)}
 
 /* IMPORT MODAL */
 .import-tabs{display:flex;gap:8px;margin-bottom:14px}
-.import-tab{flex:1;padding:10px;border-radius:10px;border:2px solid var(–border2);background:none;color:var(–text2);font-size:13px;font-weight:700;cursor:pointer;transition:all 0.2s}
-.import-tab.active{border-color:var(–teal);background:rgba(0,212,170,0.08);color:var(–teal)}
-.drop-zone{border:2px dashed var(–border2);border-radius:14px;padding:36px;text-align:center;cursor:pointer;transition:all 0.2s}
-.drop-zone:hover,.drop-zone.drag{border-color:var(–teal);background:rgba(0,212,170,0.05)}
+.import-tab{flex:1;padding:10px;border-radius:10px;border:2px solid var(--border2);background:none;color:var(--text2);font-size:13px;font-weight:700;cursor:pointer;transition:all 0.2s}
+.import-tab.active{border-color:var(--teal);background:rgba(0,212,170,0.08);color:var(--teal)}
+.drop-zone{border:2px dashed var(--border2);border-radius:14px;padding:36px;text-align:center;cursor:pointer;transition:all 0.2s}
+.drop-zone:hover,.drop-zone.drag{border-color:var(--teal);background:rgba(0,212,170,0.05)}
 .drop-zone-icon{font-size:44px;margin-bottom:10px}
-.drop-zone-text{font-size:14px;font-weight:700;color:var(–text2);margin-bottom:4px}
-.drop-zone-sub{font-size:12px;color:var(–text3);font-weight:600}
-.import-note{margin:12px 0;padding:12px;border-radius:10px;background:var(–bg3);font-size:12px;font-weight:600;color:var(–text2);line-height:1.7}
+.drop-zone-text{font-size:14px;font-weight:700;color:var(--text2);margin-bottom:4px}
+.drop-zone-sub{font-size:12px;color:var(--text3);font-weight:600}
+.import-note{margin:12px 0;padding:12px;border-radius:10px;background:var(--bg3);font-size:12px;font-weight:600;color:var(--text2);line-height:1.7}
 .import-msg{margin-top:12px;padding:11px 14px;border-radius:10px;font-size:13px;font-weight:700;display:none}
-.import-msg.ok{display:block;background:rgba(0,214,143,0.1);color:var(–green);border:1px solid rgba(0,214,143,0.2)}
-.import-msg.err{display:block;background:rgba(255,77,114,0.1);color:var(–red);border:1px solid rgba(255,77,114,0.2)}
+.import-msg.ok{display:block;background:rgba(0,214,143,0.1);color:var(--green);border:1px solid rgba(0,214,143,0.2)}
+.import-msg.err{display:block;background:rgba(255,77,114,0.1);color:var(--red);border:1px solid rgba(255,77,114,0.2)}
 
 /* FAB */
-#fab{position:fixed;bottom:28px;right:28px;width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,var(–teal),#009e84);display:flex;align-items:center;justify-content:center;font-size:28px;color:#062015;font-weight:900;box-shadow:0 8px 28px rgba(0,212,170,0.4);cursor:pointer;border:none;transition:all 0.2s;z-index:500}
+#fab{position:fixed;bottom:28px;right:28px;width:58px;height:58px;border-radius:50%;background:linear-gradient(135deg,var(--teal),#009e84);display:flex;align-items:center;justify-content:center;font-size:28px;color:#062015;font-weight:900;box-shadow:0 8px 28px rgba(0,212,170,0.4);cursor:pointer;border:none;transition:all 0.2s;z-index:500}
 #fab:hover{transform:scale(1.08);box-shadow:0 12px 36px rgba(0,212,170,0.5)}
 
 /* SEARCH */
-.search-bar{display:flex;align-items:center;gap:10px;background:var(–bg3);border:1.5px solid var(–border);border-radius:12px;padding:10px 14px;margin-bottom:16px}
-.search-bar input{flex:1;background:none;color:var(–text);font-size:14px;font-weight:600}
-.search-bar input::placeholder{color:var(–text3)}
+.search-bar{display:flex;align-items:center;gap:10px;background:var(--bg3);border:1.5px solid var(--border);border-radius:12px;padding:10px 14px;margin-bottom:16px}
+.search-bar input{flex:1;background:none;color:var(--text);font-size:14px;font-weight:600}
+.search-bar input::placeholder{color:var(--text3)}
 .filter-row{display:flex;gap:8px;margin-bottom:16px;flex-wrap:wrap}
-.filter-chip{padding:5px 12px;border-radius:20px;border:1.5px solid var(–border2);font-size:12px;font-weight:700;color:var(–text2);background:none;cursor:pointer;transition:all 0.18s}
-.filter-chip.active{background:var(–teal);border-color:var(–teal);color:#062015}
+.filter-chip{padding:5px 12px;border-radius:20px;border:1.5px solid var(--border2);font-size:12px;font-weight:700;color:var(--text2);background:none;cursor:pointer;transition:all 0.18s}
+.filter-chip.active{background:var(--teal);border-color:var(--teal);color:#062015}
 
 /* ANIMATIONS */
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
@@ -343,33 +343,30 @@ height:100vh;overflow-y:auto;
 @keyframes slideIn{from{opacity:0;transform:translateX(-10px)}to{opacity:1;transform:translateX(0)}}
 
 /* EMPTY */
-.empty{text-align:center;padding:52px 24px;color:var(–text3)}
+.empty{text-align:center;padding:52px 24px;color:var(--text3)}
 .empty-icon{font-size:52px;margin-bottom:14px}
-.empty-text{font-size:14px;font-weight:700;margin-bottom:6px;color:var(–text2)}
-.empty-sub{font-size:12px;color:var(–text3);font-weight:600}
+.empty-text{font-size:14px;font-weight:700;margin-bottom:6px;color:var(--text2)}
+.empty-sub{font-size:12px;color:var(--text3);font-weight:600}
 
 @media(max-width:900px){
-#sidebar{width:60px;min-width:60px}
-.sidebar-logo .logo-text,.nav-item>span:last-child,.nav-section,.sidebar-wallets,.sidebar-bottom,.sidebar-user .user-email,.sidebar-user .user-name{display:none}
-.nav-item{padding:12px;justify-content:center;margin:2px 4px}
-.sidebar-user{justify-content:center;padding:8px}
-.overview-row{grid-template-columns:1fr 1fr}
-.charts-row,.analytics-grid,.wallets-grid{grid-template-columns:1fr}
+  #sidebar{width:60px;min-width:60px}
+  .sidebar-logo .logo-text,.nav-item>span:last-child,.nav-section,.sidebar-wallets,.sidebar-bottom,.sidebar-user .user-email,.sidebar-user .user-name{display:none}
+  .nav-item{padding:12px;justify-content:center;margin:2px 4px}
+  .sidebar-user{justify-content:center;padding:8px}
+  .overview-row{grid-template-columns:1fr 1fr}
+  .charts-row,.analytics-grid,.wallets-grid{grid-template-columns:1fr}
 }
 @media(max-width:600px){#content{padding:14px};.overview-row{grid-template-columns:1fr}}
 </style>
-
 </head>
 <body>
 
 <!-- ══════════════════════════════════════
      AUTH SCREEN
 ══════════════════════════════════════ -->
-
 <div id="auth-screen">
 
   <!-- Left decorative panel -->
-
   <div class="auth-left">
     <div class="auth-left-bg">
       <div class="orb orb1"></div>
@@ -405,121 +402,115 @@ height:100vh;overflow-y:auto;
   </div>
 
   <!-- Right form panel -->
-
   <div class="auth-right">
     <div class="auth-form-title" id="auth-title">Bentornato 👋</div>
     <div class="auth-form-sub" id="auth-sub">Accedi al tuo account Finanzio</div>
 
-```
-<div class="auth-tabs">
-  <button class="auth-tab active" onclick="switchAuthTab('login',this)">Accedi</button>
-  <button class="auth-tab" onclick="switchAuthTab('register',this)">Registrati</button>
-</div>
-
-<div id="form-success" class="form-success">✅ Account creato con successo! Accesso in corso...</div>
-
-<!-- LOGIN FORM -->
-<div id="login-form">
-  <div class="form-group">
-    <label class="form-label">Email</label>
-    <div class="form-input-wrap">
-      <span class="form-input-icon">✉️</span>
-      <input class="form-input" type="email" id="login-email" placeholder="la-tua@email.com" />
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchAuthTab('login',this)">Accedi</button>
+      <button class="auth-tab" onclick="switchAuthTab('register',this)">Registrati</button>
     </div>
-    <div class="form-error" id="err-login-email">Inserisci un'email valida</div>
-  </div>
-  <div class="form-group">
-    <label class="form-label">Password</label>
-    <div class="form-input-wrap" style="position:relative">
-      <span class="form-input-icon">🔒</span>
-      <input class="form-input" type="password" id="login-password" placeholder="La tua password" />
-      <button class="password-toggle" onclick="togglePwd('login-password',this)">👁️</button>
-    </div>
-    <div class="form-error" id="err-login-pw">Password errata. Riprova.</div>
-  </div>
-  <div style="display:flex;justify-content:flex-end;margin-bottom:16px">
-    <a style="font-size:12px;font-weight:700;color:var(--teal);cursor:pointer">Password dimenticata?</a>
-  </div>
-  <button class="auth-btn" onclick="doLogin()">Accedi →</button>
-  <div class="auth-divider"><span>oppure</span></div>
-  <button class="social-btn" onclick="doLoginDemo()">🚀 &nbsp; Prova con account demo</button>
-</div>
 
-<!-- REGISTER FORM -->
-<div id="register-form" style="display:none">
-  <div class="form-row">
-    <div class="form-group">
-      <label class="form-label">Nome</label>
-      <div class="form-input-wrap">
-        <span class="form-input-icon">👤</span>
-        <input class="form-input" type="text" id="reg-name" placeholder="Mario" />
+    <div id="form-success" class="form-success">✅ Account creato con successo! Accesso in corso...</div>
+
+    <!-- LOGIN FORM -->
+    <div id="login-form">
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <div class="form-input-wrap">
+          <span class="form-input-icon">✉️</span>
+          <input class="form-input" type="email" id="login-email" placeholder="la-tua@email.com" />
+        </div>
+        <div class="form-error" id="err-login-email">Inserisci un'email valida</div>
       </div>
-      <div class="form-error" id="err-reg-name">Inserisci il tuo nome</div>
-    </div>
-    <div class="form-group">
-      <label class="form-label">Cognome</label>
-      <div class="form-input-wrap">
-        <span class="form-input-icon">👤</span>
-        <input class="form-input" type="text" id="reg-surname" placeholder="Rossi" />
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <div class="form-input-wrap" style="position:relative">
+          <span class="form-input-icon">🔒</span>
+          <input class="form-input" type="password" id="login-password" placeholder="La tua password" />
+          <button class="password-toggle" onclick="togglePwd('login-password',this)">👁️</button>
+        </div>
+        <div class="form-error" id="err-login-pw">Password errata. Riprova.</div>
       </div>
-      <div class="form-error" id="err-reg-surname">Inserisci il cognome</div>
+      <div style="display:flex;justify-content:flex-end;margin-bottom:16px">
+        <a style="font-size:12px;font-weight:700;color:var(--teal);cursor:pointer">Password dimenticata?</a>
+      </div>
+      <button class="auth-btn" onclick="doLogin()">Accedi →</button>
+      <div class="auth-divider"><span>oppure</span></div>
+      <button class="social-btn" onclick="doLoginDemo()">🚀 &nbsp; Prova con account demo</button>
     </div>
-  </div>
-  <div class="form-group">
-    <label class="form-label">Email</label>
-    <div class="form-input-wrap">
-      <span class="form-input-icon">✉️</span>
-      <input class="form-input" type="email" id="reg-email" placeholder="la-tua@email.com" />
-    </div>
-    <div class="form-error" id="err-reg-email">Inserisci un'email valida</div>
-  </div>
-  <div class="form-group">
-    <label class="form-label">Password</label>
-    <div class="form-input-wrap" style="position:relative">
-      <span class="form-input-icon">🔒</span>
-      <input class="form-input" type="password" id="reg-password" placeholder="Almeno 8 caratteri" oninput="checkStrength(this.value)" />
-      <button class="password-toggle" onclick="togglePwd('reg-password',this)">👁️</button>
-    </div>
-    <div class="strength-bar"><div class="strength-fill" id="strength-fill"></div></div>
-    <div class="strength-label" id="strength-label" style="color:var(--text3)"></div>
-    <div class="form-error" id="err-reg-pw">La password deve essere di almeno 8 caratteri</div>
-  </div>
-  <div class="form-group">
-    <label class="form-label">Conferma password</label>
-    <div class="form-input-wrap" style="position:relative">
-      <span class="form-input-icon">🔒</span>
-      <input class="form-input" type="password" id="reg-password2" placeholder="Ripeti la password" />
-      <button class="password-toggle" onclick="togglePwd('reg-password2',this)">👁️</button>
-    </div>
-    <div class="form-error" id="err-reg-pw2">Le password non coincidono</div>
-  </div>
-  <div class="form-group">
-    <label class="checkbox-wrap">
-      <input type="checkbox" id="reg-terms"/>
-      <span class="checkbox-label">Accetto i <a>Termini di Servizio</a> e la <a>Privacy Policy</a></span>
-    </label>
-    <div class="form-error" id="err-reg-terms">Devi accettare i termini</div>
-  </div>
-  <button class="auth-btn" onclick="doRegister()">Crea account →</button>
-</div>
 
-<div class="auth-switch">
-  <span id="auth-switch-text">Non hai un account? </span>
-  <a id="auth-switch-link" onclick="switchAuthTabByLink()">Registrati gratis</a>
-</div>
-```
+    <!-- REGISTER FORM -->
+    <div id="register-form" style="display:none">
+      <div class="form-row">
+        <div class="form-group">
+          <label class="form-label">Nome</label>
+          <div class="form-input-wrap">
+            <span class="form-input-icon">👤</span>
+            <input class="form-input" type="text" id="reg-name" placeholder="Mario" />
+          </div>
+          <div class="form-error" id="err-reg-name">Inserisci il tuo nome</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Cognome</label>
+          <div class="form-input-wrap">
+            <span class="form-input-icon">👤</span>
+            <input class="form-input" type="text" id="reg-surname" placeholder="Rossi" />
+          </div>
+          <div class="form-error" id="err-reg-surname">Inserisci il cognome</div>
+        </div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Email</label>
+        <div class="form-input-wrap">
+          <span class="form-input-icon">✉️</span>
+          <input class="form-input" type="email" id="reg-email" placeholder="la-tua@email.com" />
+        </div>
+        <div class="form-error" id="err-reg-email">Inserisci un'email valida</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Password</label>
+        <div class="form-input-wrap" style="position:relative">
+          <span class="form-input-icon">🔒</span>
+          <input class="form-input" type="password" id="reg-password" placeholder="Almeno 8 caratteri" oninput="checkStrength(this.value)" />
+          <button class="password-toggle" onclick="togglePwd('reg-password',this)">👁️</button>
+        </div>
+        <div class="strength-bar"><div class="strength-fill" id="strength-fill"></div></div>
+        <div class="strength-label" id="strength-label" style="color:var(--text3)"></div>
+        <div class="form-error" id="err-reg-pw">La password deve essere di almeno 8 caratteri</div>
+      </div>
+      <div class="form-group">
+        <label class="form-label">Conferma password</label>
+        <div class="form-input-wrap" style="position:relative">
+          <span class="form-input-icon">🔒</span>
+          <input class="form-input" type="password" id="reg-password2" placeholder="Ripeti la password" />
+          <button class="password-toggle" onclick="togglePwd('reg-password2',this)">👁️</button>
+        </div>
+        <div class="form-error" id="err-reg-pw2">Le password non coincidono</div>
+      </div>
+      <div class="form-group">
+        <label class="checkbox-wrap">
+          <input type="checkbox" id="reg-terms"/>
+          <span class="checkbox-label">Accetto i <a>Termini di Servizio</a> e la <a>Privacy Policy</a></span>
+        </label>
+        <div class="form-error" id="err-reg-terms">Devi accettare i termini</div>
+      </div>
+      <button class="auth-btn" onclick="doRegister()">Crea account →</button>
+    </div>
 
+    <div class="auth-switch">
+      <span id="auth-switch-text">Non hai un account? </span>
+      <a id="auth-switch-link" onclick="switchAuthTabByLink()">Registrati gratis</a>
+    </div>
   </div>
 </div>
 
 <!-- ══════════════════════════════════════
      APP SCREEN
 ══════════════════════════════════════ -->
-
 <div id="app-screen">
 
   <!-- SIDEBAR -->
-
   <nav id="sidebar">
     <div class="sidebar-logo">
       <div class="logo-icon">💳</div>
@@ -534,26 +525,22 @@ height:100vh;overflow-y:auto;
       <button class="user-logout" onclick="doLogout()" title="Esci">⏏</button>
     </div>
 
-```
-<div class="nav-section">Menu</div>
-<div class="nav-item active" onclick="showPage('dashboard',this)"><span class="nav-icon">🏠</span><span>Dashboard</span></div>
-<div class="nav-item" onclick="showPage('wallets',this)"><span class="nav-icon">👛</span><span>Wallet</span></div>
-<div class="nav-item" onclick="showPage('transactions',this)"><span class="nav-icon">↕️</span><span>Transazioni</span></div>
-<div class="nav-item" onclick="showPage('budgets',this)"><span class="nav-icon">🎯</span><span>Budget</span></div>
-<div class="nav-item" onclick="showPage('analytics',this)"><span class="nav-icon">📊</span><span>Analitiche</span></div>
+    <div class="nav-section">Menu</div>
+    <div class="nav-item active" onclick="showPage('dashboard',this)"><span class="nav-icon">🏠</span><span>Dashboard</span></div>
+    <div class="nav-item" onclick="showPage('wallets',this)"><span class="nav-icon">👛</span><span>Wallet</span></div>
+    <div class="nav-item" onclick="showPage('transactions',this)"><span class="nav-icon">↕️</span><span>Transazioni</span></div>
+    <div class="nav-item" onclick="showPage('budgets',this)"><span class="nav-icon">🎯</span><span>Budget</span></div>
+    <div class="nav-item" onclick="showPage('analytics',this)"><span class="nav-icon">📊</span><span>Analitiche</span></div>
 
-<div class="nav-section" style="margin-top:12px">I miei Wallet</div>
-<div class="sidebar-wallets"><div id="sw-list"></div></div>
+    <div class="nav-section" style="margin-top:12px">I miei Wallet</div>
+    <div class="sidebar-wallets"><div id="sw-list"></div></div>
 
-<div class="sidebar-bottom">
-  <button class="import-sidebar-btn" onclick="openImportModal()">📥 Importa CSV</button>
-</div>
-```
-
+    <div class="sidebar-bottom">
+      <button class="import-sidebar-btn" onclick="openImportModal()">📥 Importa CSV</button>
+    </div>
   </nav>
 
   <!-- MAIN -->
-
   <div id="main">
     <div id="topbar">
       <div class="topbar-title" id="topbar-title">Dashboard</div>
@@ -571,11 +558,9 @@ height:100vh;overflow-y:auto;
 </div>
 
 <!-- FAB -->
-
 <button id="fab" onclick="openAddModal()" style="display:none">+</button>
 
 <!-- ADD TX MODAL -->
-
 <div class="modal-overlay" id="add-modal">
 <div class="modal">
   <div class="modal-header">
@@ -613,7 +598,6 @@ height:100vh;overflow-y:auto;
 </div>
 
 <!-- IMPORT MODAL -->
-
 <div class="modal-overlay" id="import-modal">
 <div class="modal">
   <div class="modal-header">
@@ -628,10 +612,10 @@ height:100vh;overflow-y:auto;
     <div class="import-note" id="import-note"></div>
     <div class="drop-zone" id="drop-zone" onclick="document.getElementById('csv-input').click()" ondragover="onDragOver(event)" ondrop="onDrop(event)" ondragleave="document.getElementById('drop-zone').classList.remove('drag')">
       <div class="drop-zone-icon">📁</div>
-      <div class="drop-zone-text">Trascina il file CSV qui</div>
-      <div class="drop-zone-sub">oppure clicca per selezionare il file</div>
+      <div class="drop-zone-text">Trascina il file qui</div>
+      <div class="drop-zone-sub">CSV, Excel (.xlsx, .xls) — clicca per selezionare</div>
     </div>
-    <input type="file" id="csv-input" accept=".csv,.txt" style="display:none" onchange="handleFile(this)"/>
+    <input type="file" id="csv-input" accept=".csv,.txt,.xlsx,.xls" style="display:none" onchange="handleFile(this)"/>
     <div class="import-msg" id="import-msg"></div>
   </div>
 </div>
@@ -1296,8 +1280,8 @@ function deleteTxPrompt(id){
 //  IMPORT
 // ═══════════════════════════
 const IMPORT_NOTES={
-  intesa:`<b>Come esportare da Intesa Sanpaolo:</b><br>1. Accedi a Internet Banking<br>2. Vai su <em>Conto corrente → Lista movimenti</em><br>3. Seleziona il periodo e clicca <em>Scarica lista movimenti</em> → formato <b>CSV</b>`,
-  revolut:`<b>Come esportare da Revolut:</b><br>1. Apri l'app Revolut<br>2. Vai su <em>Profilo → Estratti conto</em><br>3. Seleziona il periodo e scarica in formato <b>CSV</b>`
+  intesa:`<b>Come esportare da Intesa Sanpaolo:</b><br>1. Accedi a Internet Banking<br>2. Vai su <em>Conto corrente → Lista movimenti</em><br>3. Clicca <em>Scarica lista movimenti</em> → scegli <b>Excel</b> o <b>CSV</b>`,
+  revolut:`<b>Come esportare da Revolut:</b><br>1. Apri l'app Revolut<br>2. Vai su <em>Profilo → Estratti conto</em><br>3. Scarica in formato <b>Excel</b> o <b>CSV</b>`
 };
 
 function openImportModal(){
@@ -1317,9 +1301,25 @@ function handleFile(inp){if(inp.files[0])processFile(inp.files[0]);}
 
 async function processFile(file){
   if(!file)return;
-  const text=await file.text();
-  const isRev=app.importSrc==='revolut'||file.name.toLowerCase().includes('revolut')||text.toLowerCase().includes('started date');
-  const parsed=isRev?parseRevolutCSV(text):parseIntesaCSV(text);
+  const msg=document.getElementById('import-msg');
+  const isExcel=/\.(xlsx|xls)$/i.test(file.name);
+  let parsed=[];
+  if(isExcel){
+    try{
+      const buf=await file.arrayBuffer();
+      const wb=XLSX.read(buf,{type:'array',cellDates:true});
+      const ws=wb.Sheets[wb.SheetNames[0]];
+      const rows=XLSX.utils.sheet_to_json(ws,{header:1,defval:''});
+      const isRev=app.importSrc==='revolut'||file.name.toLowerCase().includes('revolut');
+      parsed=isRev?parseRevolutRows(rows):parseIntesaRows(rows);
+    }catch(e){
+      msg.className='import-msg err';msg.textContent='⚠️ Errore nella lettura del file Excel. Riprova.';return;
+    }
+  } else {
+    const text=await file.text();
+    const isRev=app.importSrc==='revolut'||file.name.toLowerCase().includes('revolut')||text.toLowerCase().includes('started date');
+    parsed=isRev?parseRevolutCSV(text):parseIntesaCSV(text);
+  }
   const msg=document.getElementById('import-msg');
   if(!parsed.length){msg.className='import-msg err';msg.textContent='⚠️ Nessuna transazione trovata. Controlla il formato del file.';return;}
   const existing=new Set(app.transactions.map(t=>`${t.date}|${t.description}|${t.amount}`));
@@ -1331,6 +1331,44 @@ async function processFile(file){
   setTimeout(()=>renderPage(),600);
 }
 
+// ── EXCEL PARSERS ──
+function rowsToResult(rows, dcol, acol, ecol, walletId, skipState){
+  const res=[];
+  for(let i=1;i<rows.length;i++){
+    const c=rows[i];
+    if(skipState&&(String(c[skipState]||'').toLowerCase()==='reverted')) continue;
+    const rawD=c[dcol],rawA=c[acol],rawE=c[ecol]||'';
+    let amt=parseAmt(rawA); if(!rawD&&!amt) continue;
+    let date='';
+    if(rawD instanceof Date){ const d=rawD; date=`${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`; }
+    else { const s=String(rawD||'').split(' ')[0]; if(/^\d{2}\/\d{2}\/\d{4}$/.test(s)){const[dd,mm,yy]=s.split('/');date=`${yy}-${mm}-${dd}`;}else date=s; }
+    if(!date) continue;
+    const desc=String(rawE);
+    res.push({id:Date.now()+i,date,description:desc,amount:amt,category:amt>0?'entrate':guessCategory(desc),wallet:walletId,source:walletId==='revolut'?'Revolut':'Intesa Sanpaolo'});
+  }
+  return res;
+}
+
+function parseIntesaRows(rows){
+  if(!rows.length) return [];
+  const h=rows[0].map(x=>String(x||'').toLowerCase());
+  const dc=h.findIndex(x=>x.includes('data'));
+  const ac=h.findIndex(x=>x.includes('importo'));
+  const ec=h.findIndex(x=>x.includes('descriz')||x.includes('causale'));
+  return rowsToResult(rows,dc>=0?dc:0,ac>=0?ac:3,ec>=0?ec:2,'intesa',null);
+}
+
+function parseRevolutRows(rows){
+  if(!rows.length) return [];
+  const h=rows[0].map(x=>String(x||'').toLowerCase());
+  const dc=h.findIndex(x=>x.includes('date')||x.includes('started'));
+  const ac=h.findIndex(x=>x==='amount'||x.includes('amount'));
+  const ec=h.findIndex(x=>x.includes('description'));
+  const sc=h.findIndex(x=>x.includes('state'));
+  return rowsToResult(rows,dc>=0?dc:0,ac>=0?ac:4,ec>=0?ec:4,'revolut',sc>=0?sc:null);
+}
+
+// ── CSV PARSERS ──
 function parseIntesaCSV(text){
   const lines=text.split(/\r?\n/).filter(Boolean),res=[];
   let hi=lines.findIndex(l=>/data|importo/i.test(l));if(hi<0)hi=0;
@@ -1378,6 +1416,5 @@ function parseRevolutCSV(text){
   }
 })();
 </script>
-
 </body>
 </html>
