@@ -1301,7 +1301,7 @@ function handleFile(inp){if(inp.files[0])processFile(inp.files[0]);}
 
 async function processFile(file){
   if(!file)return;
-  const msg=document.getElementById('import-msg');
+  const importMsg=document.getElementById('import-msg');
   const isExcel=/\.(xlsx|xls)$/i.test(file.name);
   let parsed=[];
   if(isExcel){
@@ -1313,7 +1313,7 @@ async function processFile(file){
       const isRev=app.importSrc==='revolut'||file.name.toLowerCase().includes('revolut');
       parsed=isRev?parseRevolutRows(rows):parseIntesaRows(rows);
     }catch(e){
-      msg.className='import-msg err';msg.textContent='⚠️ Errore nella lettura del file Excel. Riprova.';return;
+      importMsg.className='import-msg err';importMsg.textContent='⚠️ Errore nella lettura del file Excel. Riprova.';return;
     }
   } else {
     const text=await file.text();
@@ -1326,8 +1326,8 @@ async function processFile(file){
   const newOnes=parsed.filter(t=>!existing.has(`${t.date}|${t.description}|${t.amount}`));
   app.transactions=[...app.transactions,...newOnes].sort((a,b)=>b.date.localeCompare(a.date));
   save();
-  msg.className='import-msg ok';
-  msg.textContent=`✅ ${newOnes.length} transazioni importate da ${isRev?'Revolut':'Intesa Sanpaolo'}! (${parsed.length-newOnes.length} duplicate ignorate)`;
+  importMsg.className='import-msg ok';
+  importMsg.textContent=`✅ ${newOnes.length} transazioni importate! (${parsed.length-newOnes.length} duplicate ignorate)`;
   setTimeout(()=>renderPage(),600);
 }
 
